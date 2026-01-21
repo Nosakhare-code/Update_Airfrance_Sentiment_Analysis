@@ -206,10 +206,10 @@ def clean_text(text):
 st.markdown('<h1 class="main-header">✈️ Air France Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
 st.markdown("""
 ### Real-time Sentiment Analysis & Economic Impact Assessment
-*Powered by Hugging Face Transformers & Streamlit*
-*Project done by Emmanuel Noskhare Asowata*
-*Contact --> noskhareasowata94@gmail.com*
-*Quantitative & Applied Economist*
+*Project done by Emmanuel Noskhare Asowata* \n
+*Contact --> noskhareasowata94@gmail.com* \n
+*Quantitative & Applied Economist* \n
+*Powered by Hugging Face Transformers & Streamlit*.
 """)
 
 # Sidebar

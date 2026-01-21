@@ -672,4 +672,7 @@ st.markdown("""
     <p>
         <strong>Models Used:</strong> distilbert-base-uncased-finetuned-sst-2-english (Hugging Face) |
         <strong>Updates:</strong> Real-time sentiment analysis every refresh |
-        <strong>Data:</strong> Historical + Simulate
+        <strong>Data:</strong> Historical + Simulated
+    </p>
+</div>
+""", unsafe_allow_html=True)

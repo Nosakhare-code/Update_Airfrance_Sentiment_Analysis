@@ -207,6 +207,9 @@ st.markdown('<h1 class="main-header">✈️ Air France Live Customer Sentiment D
 st.markdown("""
 ### Real-time Sentiment Analysis & Economic Impact Assessment
 *Powered by Hugging Face Transformers & Streamlit*
+*Project done by Emmanuel Noskhare Asowata*
+*Contact --> noskhareasowata94@gmail.com*
+*Quantitative & Applied Economist*
 """)
 
 # Sidebar

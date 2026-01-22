@@ -7,7 +7,7 @@ The dashboard identifies dissatisfaction trends, measures emotional intensity, a
 
 ## Business Problem
 Customer complaints are abundant but rarely quantified financially.  
-Leadership teams need a way to **prioritize issues based on economic impact**, not just volume.
+Management teams need a way to **prioritize issues based on economic impact**, not just volume.
 
 ## Solution
 - Analyze customer comments using **NLP**

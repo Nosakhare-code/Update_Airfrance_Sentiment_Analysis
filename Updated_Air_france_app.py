@@ -13,7 +13,7 @@ import torch
 
 # Page configuration
 st.set_page_config(
-    page_title="Air France Customer Sentiment Analysis",
+    page_title="Airline Customer Sentiment Analysis",
     page_icon="✈️",
     layout="wide",
     initial_sidebar_state="expanded"

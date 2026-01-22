@@ -22,7 +22,7 @@ Management teams need a way to **prioritize issues based on economic impact**, n
 - High emotional intensity  
 - Estimated **€36,000 revenue at risk**
 
-## Tech Stack
+## Tools
 - **Python** (Pandas, NumPy)  
 - **NLP** (BERT sentiment scoring)  
 - **Streamlit**  

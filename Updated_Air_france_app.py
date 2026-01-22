@@ -203,7 +203,7 @@ def clean_text(text):
     return text.strip()
 
 # Title and introduction
-st.markdown('<h1 class="main-header">✈️ Air France Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">✈️ Airline Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
 st.markdown("""
 ### Real-time Sentiment Analysis & Economic Impact Assessment
 *Project done by Emmanuel Noskhare Asowata* \n

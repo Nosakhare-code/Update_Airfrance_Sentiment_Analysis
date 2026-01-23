@@ -8,8 +8,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import re
 import time
-from transformers import pipeline
-import torch
 
 # Page configuration
 st.set_page_config(
@@ -80,14 +78,19 @@ st.markdown("""
 def load_sentiment_model():
     """Load the sentiment analysis model from Hugging Face"""
     try:
+        from transformers import pipeline
+        import torch
         sentiment_pipeline = pipeline(
             "sentiment-analysis",
             model="distilbert-base-uncased-finetuned-sst-2-english",
             device=-1  # Use CPU
         )
         return sentiment_pipeline
+    except ImportError:
+        st.warning("⚠️ Transformers library not available. Using keyword-based analysis.")
+        return None
     except Exception as e:
-        st.warning(f"Could not load model: {e}. Using simulated analysis.")
+        st.warning(f"⚠️ Could not load model: {e}. Using keyword-based analysis.")
         return None
 
 # Initialize session state
@@ -162,7 +165,7 @@ def fetch_twitter_comments_simulated(search_term="AirFrance", count=10):
     return simulated_tweets[:count]
 
 def analyze_sentiment_live(text):
-    """Analyze sentiment of text using Hugging Face model"""
+    """Analyze sentiment of text using Hugging Face model or fallback"""
     if st.session_state.sentiment_model:
         try:
             result = st.session_state.sentiment_model(text[:512])[0]
@@ -177,22 +180,27 @@ def analyze_sentiment_live(text):
                 return "Neutral", score
         except Exception as e:
             st.error(f"Error in sentiment analysis: {e}")
-            return "Neutral", 0.5
+            # Fall through to keyword-based analysis
+    
+    # Fallback to keyword-based analysis
+    negative_keywords = ['terrible', 'worst', 'frustrating', 'unacceptable', 'disconnected', 'lost', 'angry', 'bad', 'awful', 'horrible']
+    positive_keywords = ['excellent', 'great', 'helpful', 'professional', 'thank', 'loved', 'good', 'amazing', 'wonderful', 'fantastic']
+    
+    text_lower = text.lower()
+    negative_count = sum(1 for word in negative_keywords if word in text_lower)
+    positive_count = sum(1 for word in positive_keywords if word in text_lower)
+    
+    total_keywords = negative_count + positive_count
+    
+    if negative_count > positive_count:
+        # Calculate confidence based on keyword strength
+        confidence = min(0.6 + (negative_count * 0.1), 0.95)
+        return "Negative", confidence
+    elif positive_count > negative_count:
+        confidence = min(0.6 + (positive_count * 0.1), 0.95)
+        return "Positive", confidence
     else:
-        # Fallback to keyword-based analysis
-        negative_keywords = ['terrible', 'worst', 'frustrating', 'unacceptable', 'disconnected', 'lost', 'angry']
-        positive_keywords = ['excellent', 'great', 'helpful', 'professional', 'thank', 'loved', 'good']
-        
-        text_lower = text.lower()
-        negative_count = sum(1 for word in negative_keywords if word in text_lower)
-        positive_count = sum(1 for word in positive_keywords if word in text_lower)
-        
-        if negative_count > positive_count:
-            return "Negative", 0.8
-        elif positive_count > negative_count:
-            return "Positive", 0.8
-        else:
-            return "Neutral", 0.5
+        return "Neutral", 0.5
 
 def clean_text(text):
     """Clean text for analysis"""
@@ -206,16 +214,16 @@ def clean_text(text):
 st.markdown('<h1 class="main-header">✈️ Airline Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
 st.markdown("""
 ### Real-time Sentiment Analysis & Economic Impact Assessment
-*Project done by Emmanuel Noskhare Asowata* \n
-*Contact --> noskhareasowata94@gmail.com* \n
-*Quantitative & Applied Economist* \n
-*Powered by Hugging Face Transformers & Streamlit*.
+*Project done by Emmanuel Noskhare Asowata*  
+*Contact --> noskhareasowata94@gmail.com*  
+*Quantitative & Applied Economist*  
+*Powered by Hugging Face Transformers & Streamlit*
 """)
 
 # Sidebar
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Air_France_Logo.svg/2560px-Air_France_Logo.svg.png", 
-             use_container_width=True)
+             use_column_width=True)
     
     st.markdown("### ⚙️ Analysis Controls")
     
@@ -274,7 +282,7 @@ with st.sidebar:
             st.success("✓ Hugging Face Model Loaded")
             st.info("Model: distilbert-base-uncased-finetuned-sst-2-english")
         else:
-            st.warning("⚠️ Using simulated analysis")
+            st.warning("⚠️ Using keyword-based analysis")
         st.caption("Transformers provide state-of-the-art sentiment analysis")
 
 # Main content area with tabs
@@ -354,13 +362,20 @@ with tab1:
         """, unsafe_allow_html=True)
     
     with col3:
-        avg_score = np.mean(list(base_df["sentiment_score"]) + 
-                           [t.get("sentiment_score", 0.5) for t in st.session_state.live_tweets])
+        # Calculate weighted sentiment score (-1 to 1 scale)
+        all_sentiments = list(base_df["sentiment_label"]) + [t.get("sentiment", "Neutral") for t in st.session_state.live_tweets]
+        sentiment_mapping = {"Negative": -1, "Neutral": 0, "Positive": 1}
+        sentiment_values = [sentiment_mapping.get(s, 0) for s in all_sentiments]
+        avg_sentiment = np.mean(sentiment_values) if sentiment_values else 0
+        
+        # Convert to 0-1 scale for display
+        display_score = (avg_sentiment + 1) / 2  # Maps -1 to 0, 0 to 0.5, 1 to 1
+        
         st.markdown(f"""
         <div class="metric-card">
             <h4>Avg Sentiment Score</h4>
-            <h2>{avg_score:.2f}</h2>
-            <p>Higher is better (0-1 scale)</p>
+            <h2>{display_score:.2f}</h2>
+            <p>0=All Negative, 0.5=Neutral, 1=All Positive</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -379,8 +394,14 @@ with tab1:
     
     with col1:
         # Sentiment distribution
-        sentiment_counts = pd.Series([x for x in base_df["sentiment_label"]] + 
-                                    [t.get("sentiment", "Neutral") for t in st.session_state.live_tweets]).value_counts()
+        all_sentiments = list(base_df["sentiment_label"]) + [t.get("sentiment", "Neutral") for t in st.session_state.live_tweets]
+        sentiment_counts = pd.Series(all_sentiments).value_counts()
+        
+        # Ensure all sentiment types are present
+        for sentiment_type in ["Negative", "Neutral", "Positive"]:
+            if sentiment_type not in sentiment_counts.index:
+                sentiment_counts[sentiment_type] = 0
+        
         fig1 = px.pie(
             values=sentiment_counts.values,
             names=sentiment_counts.index,
@@ -397,7 +418,7 @@ with tab1:
     
     with col2:
         # Sentiment over time
-        dates = pd.date_range(start='2023-08-01', periods=30, freq='D')
+        dates = pd.date_range(end=datetime.now(), periods=30, freq='D')
         sentiment_values = np.random.choice([-1, 0, 1], 30, p=[0.6, 0.2, 0.2])
         cumulative = np.cumsum(sentiment_values)
         
@@ -503,16 +524,26 @@ with tab3:
         customers_affected = st.number_input("Customers Affected Monthly", value=10000)
     
     # Calculate ROI
-    value_per_point = customers_affected * retention_value * 0.01
-    annual_value = value_per_point * expected_improvement * 12
-    roi = ((annual_value - solution_cost) / solution_cost) * 100
+    if customers_affected > 0 and solution_cost > 0:
+        # Value per 1% improvement in CSAT
+        value_per_point = (customers_affected * retention_value * churn_rate) / 100
+        # Annual value from improvement
+        annual_value = value_per_point * expected_improvement * 12
+        # ROI calculation
+        net_gain = annual_value - solution_cost
+        roi = (net_gain / solution_cost) * 100
+    else:
+        annual_value = 0
+        net_gain = 0
+        roi = 0
     
     st.markdown(f"""
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                 color: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
-        <h3>Projected Annual ROI: {roi:.0f}%</h3>
+        <h3>Projected Annual ROI: {roi:.1f}%</h3>
         <p>Annual Value: €{annual_value:,.0f} | Investment: €{solution_cost:,.0f}</p>
-        <p>Net Gain: €{annual_value - solution_cost:,.0f} per year</p>
+        <p>Net Gain: €{net_gain:,.0f} per year</p>
+        <p style="font-size: 0.9em; opacity: 0.9;">Payback Period: {(solution_cost / (annual_value / 12)):.1f} months</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -582,7 +613,7 @@ with tab4:
         st.markdown("")
         if st.button("🚀 Run Live Analysis", type="primary"):
             with st.spinner(f"Fetching and analyzing {tweet_count} tweets..."):
-                time.sleep(2)
+                time.sleep(1)
                 
                 tweets = fetch_twitter_comments_simulated(search_term, tweet_count)
                 analyzed_tweets = []
@@ -654,28 +685,4 @@ with tab4:
                 mime="text/csv"
             )
     else:
-        st.info("👈 Click 'Fetch New Tweets' in the sidebar or 'Run Live Analysis' above to start!")
-
-# Analysis History
-if st.session_state.analysis_history:
-    with st.expander("📋 Analysis History"):
-        for analysis in reversed(st.session_state.analysis_history[-5:]):
-            st.markdown(f"""
-            **{analysis['timestamp'].strftime('%H:%M')}** - {analysis['sentiment']} ({analysis['score']:.2f})
-            > {analysis['text']}
-            ---
-            """)
-
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: #6B7280; padding: 2rem;">
-    <h4>🌐 Live Deployment Information</h4>
-    <p>This dashboard is deployed on <strong>Streamlit Community Cloud</strong> with live Hugging Face integration.</p>
-    <p>
-        <strong>Models Used:</strong> distilbert-base-uncased-finetuned-sst-2-english (Hugging Face) |
-        <strong>Updates:</strong> Real-time sentiment analysis every refresh |
-        <strong>Data:</strong> Historical + Simulated
-    </p>
-</div>
-""", unsafe_allow_html=True)
+        st.info("👈 Click 'Fetch New Tweets' in the sidebar or 'Run Live Analysis' above to start

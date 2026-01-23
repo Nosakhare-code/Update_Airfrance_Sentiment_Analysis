@@ -511,221 +511,59 @@ with tab2:
 with tab3:
     st.markdown('<h2 class="sub-header">🚀 Data-Driven Recommendations</h2>', unsafe_allow_html=True)
     
-    # ROI Calculator
-    st.markdown("### 💰 ROI Calculator for Proposed Solutions")
+    st.markdown("""
+    ### Key Insights from Sentiment Analysis
     
-    col1, col2, col3 = st.columns(3)
+    Based on the analysis of customer feedback, several critical pain points have been identified:
+    
+    1. **Agent Continuity Issues**: Customers frequently report having to repeat information across multiple calls
+    2. **Language Barriers**: Communication difficulties between agents and customers
+    3. **Visa Policy Inflexibility**: Rigid policies causing customer frustration during travel disruptions
+    4. **Long Wait Times**: Extended hold times leading to negative sentiment
+    
+    ### Proposed Action Items
+    
+    **Immediate Actions (0-30 days)**:
+    - Review and streamline visa change policies
+    - Implement customer context notes in CRM system
+    - Conduct language proficiency assessments
+    
+    **Short-term Actions (30-90 days)**:
+    - Develop agent training program focused on empathy and problem-solving
+    - Create escalation procedures for complex cases
+    - Implement customer satisfaction follow-up surveys
+    
+    **Long-term Actions (90+ days)**:
+    - Build comprehensive customer history tracking system
+    - Establish quality assurance monitoring program
+    - Deploy real-time sentiment monitoring dashboard
+    """)
+    
+    # Sentiment insights from current data
+    st.markdown("### 📊 Current Sentiment Insights")
+    
+    col1, col2 = st.columns(2)
     
     with col1:
-        solution_cost = st.number_input("Solution Cost (€)", value=200000, step=50000)
-    with col2:
-        expected_improvement = st.slider("Expected CSAT Improvement (%)", 5, 50, 20)
-    with col3:
-        customers_affected = st.number_input("Customers Affected Monthly", value=10000)
-    
-    # FIXED ROI CALCULATION - MATHEMATICALLY CORRECT AND REALISTIC
-    if customers_affected > 0 and solution_cost > 0:
-        # Business assumptions (based on industry research):
-        # 1. Each 1% CSAT improvement reduces monthly churn by 1% (conservative estimate)
-        # 2. Saved customers retain their lifetime value
-        # 3. Customer lifetime is 3 years (36 months) for airline industry
-        
-        # Step 1: Calculate monthly customers at risk of churning
-        monthly_at_risk = customers_affected * churn_rate
-        
-        # Step 2: Calculate customers saved per month from CSAT improvement
-        # Industry research: 1% CSAT improvement ≈ 1% churn reduction
-        churn_reduction_rate = 0.01  # 1% churn reduction per 1% CSAT improvement
-        saved_customers_monthly = monthly_at_risk * (expected_improvement / 100) * churn_reduction_rate
-        
-        # Step 3: Calculate monthly financial value
-        # Airline customer average lifespan: 3 years = 36 months
-        avg_customer_lifespan_months = 36
-        monthly_value_per_saved_customer = retention_value / avg_customer_lifespan_months
-        
-        # Step 4: Total monthly and annual value
-        monthly_value = saved_customers_monthly * monthly_value_per_saved_customer
-        annual_value = monthly_value * 12
-        
-        # Step 5: ROI calculation
-        net_gain = annual_value - solution_cost
-        roi = (net_gain / solution_cost) * 100 if solution_cost > 0 else 0
-        
-        # Step 6: Calculate payback period (in months)
-        if monthly_value > 0:
-            payback_period = solution_cost / monthly_value
-        else:
-            payback_period = float('inf')
-    else:
-        annual_value = 0
-        net_gain = 0
-        roi = 0
-        payback_period = 0
-        saved_customers_monthly = 0
-        monthly_value = 0
-        monthly_at_risk = customers_affected * churn_rate if customers_affected > 0 else 0
-    
-    # Display ROI results with detailed breakdown
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                color: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
-        <h3>Projected Annual ROI: {roi:.1f}%</h3>
-        
-        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h4>📊 Detailed Breakdown</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
-                <div>
-                    <p>Monthly Customers at Risk:</p>
-                    <h5>{monthly_at_risk:,.0f}</h5>
-                </div>
-                <div>
-                    <p>Customers Saved Monthly:</p>
-                    <h5>{saved_customers_monthly:,.1f}</h5>
-                </div>
-                <div>
-                    <p>Monthly Value Created:</p>
-                    <h5>€{monthly_value:,.0f}</h5>
-                </div>
-                <div>
-                    <p>Annual Value Created:</p>
-                    <h5>€{annual_value:,.0f}</h5>
-                </div>
-            </div>
-        </div>
-        
-        <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
-            <p><strong>Annual Value:</strong> €{annual_value:,.0f} | <strong>Investment:</strong> €{solution_cost:,.0f}</p>
-            <p><strong>Net Annual Gain:</strong> €{net_gain:,.0f}</p>
-            <p><strong>Payback Period:</strong> {payback_period:.1f} months</p>
-            <p style="font-size: 0.8em; opacity: 0.9; margin-top: 10px;">
-                <em>Assumptions: 1% CSAT improvement reduces churn by 1%, customer lifespan = 3 years</em>
-            </p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Explanation of the calculation
-    with st.expander("📝 How This ROI is Calculated"):
-        st.markdown(f"""
-        ### Calculation Methodology
-        
-        **Step 1: Identify At-Risk Customers**
-        ```
-        Monthly At-Risk Customers = Customers Affected × Churn Rate
-                                 = {customers_affected:,.0f} × {churn_rate:.0%} = {monthly_at_risk:,.0f}
-        ```
-        
-        **Step 2: Calculate Customers Saved**
-        ```
-        Customers Saved = At-Risk Customers × CSAT Improvement × Churn Reduction Rate
-                       = {monthly_at_risk:,.0f} × {expected_improvement/100:.0%} × 1%
-                       = {saved_customers_monthly:.1f} customers/month
-        ```
-        
-        *Industry Research: Each 1% CSAT improvement reduces churn by approximately 1%*
-        
-        **Step 3: Calculate Financial Value**
-        ```
-        Monthly Value per Customer = Lifetime Value ÷ 36 months (3-year average)
-                                 = €{retention_value:,.0f} ÷ 36 = €{retention_value/36:.0f}/month
-        
-        Monthly Value = Customers Saved × Monthly Value per Customer
-                     = {saved_customers_monthly:.1f} × €{retention_value/36:.0f} = €{monthly_value:,.0f}/month
-        ```
-        
-        **Step 4: Calculate Annual Value**
-        ```
-        Annual Value = Monthly Value × 12 months
-                    = €{monthly_value:,.0f} × 12 = €{annual_value:,.0f}/year
-        ```
-        
-        **Step 5: Calculate ROI**
-        ```
-        ROI = (Annual Value - Investment) ÷ Investment × 100%
-            = (€{annual_value:,.0f} - €{solution_cost:,.0f}) ÷ €{solution_cost:,.0f} × 100% = {roi:.1f}%
-        ```
-        
-        **Step 6: Calculate Payback Period**
-        ```
-        Payback Period = Investment ÷ Monthly Value
-                      = €{solution_cost:,.0f} ÷ €{monthly_value:,.0f} = {payback_period:.1f} months
-        ```
-        
-        ### Business Justification
-        
-        1. **Industry-Proven:** Research shows 1% CSAT improvement ≈ 1% churn reduction
-        2. **Conservative Timeframe:** 3-year customer lifespan (industry average for airlines)
-        3. **Focus on Retention:** Preventing customer loss is 5-25x cheaper than acquisition
-        4. **Compound Benefits:** Happy customers refer others and spend more
+        st.markdown("""
+        **Top Negative Themes**:
+        - Customer service wait times
+        - Agent continuity problems
+        - Policy inflexibility
+        - Communication issues
+        - Lost luggage handling
         """)
     
-    # Sensitivity Analysis
-    st.markdown("### 🔍 Sensitivity Analysis")
-    st.markdown("What happens if our assumptions change?")
+    with col2:
+        st.markdown("""
+        **Positive Feedback Areas**:
+        - Professional flight cancellation handling
+        - Helpful individual agents
+        - Business class experience
+        - In-flight entertainment
+        - Quick issue resolution (when achieved)
+        """)
     
-    sensitivity_col1, sensitivity_col2, sensitivity_col3 = st.columns(3)
-    
-    with sensitivity_col1:
-        st.markdown("**Conservative Scenario**")
-        st.markdown("*(0.5% churn reduction per 1% CSAT)*")
-        
-        # Recalculate with more conservative assumption
-        conservative_churn_reduction = 0.005  # 0.5% instead of 1%
-        conservative_saved = monthly_at_risk * (expected_improvement / 100) * conservative_churn_reduction
-        conservative_monthly = conservative_saved * (retention_value / 36)
-        conservative_annual = conservative_monthly * 12
-        conservative_roi = ((conservative_annual - solution_cost) / solution_cost) * 100
-        
-        st.metric("Annual ROI", f"{conservative_roi:.1f}%", 
-                 delta=f"{conservative_roi - roi:.1f}%", delta_color="inverse")
-    
-    with sensitivity_col2:
-        st.markdown("**Base Scenario**")
-        st.markdown("*(1% churn reduction per 1% CSAT)*")
-        
-        st.metric("Annual ROI", f"{roi:.1f}%", 
-                 delta="Baseline", delta_color="off")
-    
-    with sensitivity_col3:
-        st.markdown("**Optimistic Scenario**")
-        st.markdown("*(2% churn reduction per 1% CSAT)*")
-        
-        # Recalculate with optimistic assumption
-        optimistic_churn_reduction = 0.02  # 2% instead of 1%
-        optimistic_saved = monthly_at_risk * (expected_improvement / 100) * optimistic_churn_reduction
-        optimistic_monthly = optimistic_saved * (retention_value / 36)
-        optimistic_annual = optimistic_monthly * 12
-        optimistic_roi = ((optimistic_annual - solution_cost) / solution_cost) * 100
-        
-        st.metric("Annual ROI", f"{optimistic_roi:.1f}%", 
-                 delta=f"{optimistic_roi - roi:.1f}%", delta_color="normal")
-    
-    # Industry Comparison
-    st.markdown("### 📊 Industry Comparison")
-    
-    industry_data = pd.DataFrame({
-        'Improvement Type': ['Customer Experience (Airline)', 'Technology Upgrade', 'Marketing Campaign', 'Staff Training'],
-        'Typical ROI Range': ['100-500%', '50-200%', '80-150%', '120-300%'],
-        'Your Projected ROI': [f'{roi:.0f}%', 'N/A', 'N/A', 'N/A']
-    })
-    
-    fig_industry = go.Figure(data=[
-        go.Bar(name='Industry Range (Min)', x=industry_data['Improvement Type'], 
-               y=[100, 50, 80, 120], marker_color='lightgray'),
-        go.Bar(name='Industry Range (Max)', x=industry_data['Improvement Type'], 
-               y=[400, 150, 70, 180], marker_color='gray'),
-        go.Bar(name='Your Projection', x=industry_data['Improvement Type'], 
-               y=[max(0, roi), 0, 0, 0], marker_color='#2563EB')
-    ])
-    
-    fig_industry.update_layout(
-        title='ROI Comparison: Customer Experience vs Other Investments',
-        barmode='overlay',
-        showlegend=True,
-        height=400
-    )
-    
-    st.plotly_chart(fig_industry, use_container_width=True)
 
 with tab4:
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)

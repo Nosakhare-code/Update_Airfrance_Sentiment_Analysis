@@ -3,7 +3,7 @@
 ## Project Summary
 This project demonstrates how customer feedback can be transformed into **financially actionable insights** using sentiment analysis and business modeling.
 
-The dashboard identifies dissatisfaction trends, measures emotional intensity, and estimates potential revenue loss due to customer churn.
+The dashboard identifies dissatisfaction trends and measures emotional intensity.
 
 ## Business Problem
 Customer complaints are abundant but rarely quantified financially.  

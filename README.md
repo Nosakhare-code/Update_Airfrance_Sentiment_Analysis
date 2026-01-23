@@ -16,12 +16,6 @@ Management teams need a way to **prioritize issues based on economic impact**, n
 - Apply **churn** and **lifetime value assumptions**
 - Estimate **future revenue at risk**
 
-## Sample Results
-- 56 customer comments analyzed  
-- 64% dissatisfied customers  
-- High emotional intensity  
-- Estimated **€36,000 revenue at risk**
-
 ## Tools
 - **Python** (Pandas, NumPy)  
 - **NLP** (BERT sentiment scoring)  

@@ -685,4 +685,28 @@ with tab4:
                 mime="text/csv"
             )
     else:
-        st.info("👈 Click 'Fetch New Tweets' in the sidebar or 'Run Live Analysis' above to start
+        st.info("👈 Click 'Fetch New Tweets' in the sidebar or 'Run Live Analysis' above to start!")
+
+# Analysis History
+if st.session_state.analysis_history:
+    with st.expander("📋 Analysis History"):
+        for analysis in reversed(st.session_state.analysis_history[-5:]):
+            st.markdown(f"""
+            **{analysis['timestamp'].strftime('%H:%M')}** - {analysis['sentiment']} ({analysis['score']:.2f})
+            > {analysis['text']}
+            ---
+            """)
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; color: #6B7280; padding: 2rem;">
+    <h4>🌐 Live Deployment Information</h4>
+    <p>This dashboard is deployed on <strong>Streamlit Community Cloud</strong> with live Hugging Face integration.</p>
+    <p>
+        <strong>Models Used:</strong> distilbert-base-uncased-finetuned-sst-2-english (Hugging Face) |
+        <strong>Updates:</strong> Real-time sentiment analysis every refresh |
+        <strong>Data:</strong> Historical + Simulated
+    </p>
+</div>
+""", unsafe_allow_html=True)

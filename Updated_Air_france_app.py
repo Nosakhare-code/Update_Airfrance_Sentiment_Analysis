@@ -211,7 +211,7 @@ def clean_text(text):
     return text.strip()
 
 # Title and introduction
-st.markdown('<h1 class="main-header">✈️ Airline Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header"> Airline Live Customer Sentiment Dashboard</h1>', unsafe_allow_html=True)
 st.markdown("""
 ### Real-time Sentiment Analysis & Economic Impact Assessment
 *Project done by Emmanuel Noskhare Asowata*  
@@ -270,23 +270,23 @@ with st.sidebar:
     
     # Economic parameters
     st.markdown("---")
-    st.markdown("### 💰 Economic Parameters")
+    st.markdown("### Economic Parameters")
     avg_ticket_price = st.slider("Average Ticket Price (€)", 500, 2000, 800, 50)
     churn_rate = st.slider("Negative Sentiment Churn Rate (%)", 5, 50, 20, 5) / 100
     retention_value = st.slider("Customer Lifetime Value (€)", 2000, 20000, 5000, 500)
     
     # Model information
     st.markdown("---")
-    with st.expander("🤖 Model Information"):
+    with st.expander(" Model Information"):
         if st.session_state.sentiment_model:
             st.success("✓ Hugging Face Model Loaded")
             st.info("Model: distilbert-base-uncased-finetuned-sst-2-english")
         else:
-            st.warning("⚠️ Using keyword-based analysis")
+            st.warning(" Using keyword-based analysis")
         st.caption("Transformers provide state-of-the-art sentiment analysis")
 
 # Main content area with tabs
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "🎯 Case Study", "💡 Recommendations", "📈 Live Analysis"])
+tab1, tab2, tab3, tab4 = st.tabs([" Dashboard", " Case Study", " Recommendations", " Live Analysis"])
 
 with tab1:
     # Load synthetic data
@@ -294,14 +294,14 @@ with tab1:
     def load_base_data():
         complaint_templates = [
             "@AirFrance been on hold for 2 hours trying to change my flight. Customer service is terrible!",
-            "Air France cancelled my flight due to visa issues and now charging $400 to rebook. Unacceptable!",
+            "They cancelled my flight due to visa issues and now charging extra $400 to rebook. Unacceptable!",
             "Every time I call @AirFrance I get a different agent and have to explain everything again. So frustrating!",
-            "Air France lost my luggage and no one answers the phone. Worst customer service ever!",
-            "Trying to get a refund from @AirFrance for 3 months. They keep transferring me between departments.",
-            "Air France agent couldn't understand my English properly. Communication issues with customer service.",
-            "Booked with Air France but had to cancel due to visa delay. They want huge change fees!",
-            "@AirFrance please help! I've been trying to reach customer service for days about my booking.",
-            "Air France flight cancelled, no alternatives provided. Stranded at airport!",
+            "I lost my luggage and no one answers the phone. Worst customer service ever!",
+            "Trying to get a refund from for 3 months. They keep transferring me between departments.",
+            "Customer service agent couldn't understand my English properly, something with the accent. Communication issues with customer service.",
+            "Booked with the Flight company but had to cancel due to visa delay. They want huge change fees!",
+            "please help! I've been trying to reach customer service for days about my booking.",
+            "flight cancelled, no alternatives provided. Stranded at airport!",
             "The @AirFrance call center disconnected me twice after waiting 45 minutes each time.",
             "Positive: Air France resolved my issue quickly when I finally got through to the right department.",
             "Neutral: Contacted Air France about flight change, waiting to hear back.",
@@ -438,7 +438,7 @@ with tab1:
         st.plotly_chart(fig2, use_container_width=True)
 
 with tab2:
-    st.markdown('<h2 class="sub-header">🎯 The Agent Continuity Problem</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header"> The Agent Continuity Problem</h2>', unsafe_allow_html=True)
     
     col1, col2 = st.columns([2, 1])
     
@@ -509,7 +509,7 @@ with tab2:
         """)
 
 with tab3:
-    st.markdown('<h2 class="sub-header">🚀 Data-Driven Recommendations</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header"> Data-Driven Recommendations</h2>', unsafe_allow_html=True)
     
     st.markdown("""
     ### Key Insights from Sentiment Analysis
@@ -523,7 +523,7 @@ with tab3:
     
     ### Proposed Action Items
     
-    **Immediate Actions (0-30 days)**:
+    **Immediate Actions (1-30 days)**:
     - Review and streamline visa change policies
     - Implement customer context notes in CRM system
     - Conduct language proficiency assessments
@@ -540,7 +540,7 @@ with tab3:
     """)
     
     # Sentiment insights from current data
-    st.markdown("### 📊 Current Sentiment Insights")
+    st.markdown("### Current Sentiment Insights")
     
     col1, col2 = st.columns(2)
     
@@ -566,7 +566,68 @@ with tab3:
     
 
 with tab4:
+    
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
+
+    # REAL-WORLD REVENUE IMPACT MODEL
+    st.markdown("### 💰 Real-World Airline Revenue Impact (Realistic Model)")
+
+    total_customers = 1000
+    churn_pct = 0.05
+    avg_ticket_price_real = 5000  
+    trips_per_year = 1
+    net_margin = 0.02  
+    replacement_cost = 150
+
+    customers_lost = int(total_customers * churn_pct)
+    gross_revenue_lost = customers_lost * avg_ticket_price_real * trips_per_year
+    net_profit_lost = gross_revenue_lost * net_margin
+    replacement_cost_total = customers_lost * replacement_cost
+    total_economic_impact = net_profit_lost + replacement_cost_total
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric("Customers Lost", f"{customers_lost}", help="5% churn from 1,000 passengers")
+
+    with col2:
+        st.metric("Gross Revenue Lost", f"€{gross_revenue_lost:,.0f}")
+
+    with col3:
+        st.metric("Net Profit Lost", f"€{net_profit_lost:,.0f}")
+
+    with col4:
+        st.metric("Total Economic Impact", f"€{total_economic_impact:,.0f}")
+
+    st.markdown("""
+    <div class="insight-box">
+        <strong>Real-world interpretation:</strong><br>
+        Airlines do not lose massive profit directly because margins are tiny — but empty seats + acquisition cost + lost cross selling hurts.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    st.markdown("### 🐦 Real-Time Comment Stream")
+
+    if st.session_state.live_tweets:
+        for tweet in st.session_state.live_tweets[:20]:
+            sentiment_class = {
+                "Negative": "negative-comment",
+                "Positive": "positive-comment",
+                "Neutral": "neutral-comment"
+            }.get(tweet.get("sentiment", "Neutral"), "neutral-comment")
+
+            st.markdown(f"""
+            <div class="twitter-comment {sentiment_class}">
+                <strong>@{tweet['username']}</strong><br>
+                {tweet['text']}<br>
+                <small>{tweet['timestamp'].strftime('%Y-%m-%d %H:%M')} | ❤️ {tweet['likes']} | 🔁 {tweet['retweets']}</small>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("Click 'Fetch New Tweets' to begin live stream simulation.")
+
     
     # Real-time analysis controls
     col1, col2, col3 = st.columns([2, 1, 1])
@@ -578,7 +639,7 @@ with tab4:
     with col3:
         st.markdown("")
         st.markdown("")
-        if st.button("🚀 Run Live Analysis", type="primary"):
+        if st.button(" Run Live Analysis", type="primary"):
             with st.spinner(f"Fetching and analyzing {tweet_count} tweets..."):
                 time.sleep(1)
                 
@@ -597,7 +658,7 @@ with tab4:
     
     # Display live tweets
     if st.session_state.live_tweets:
-        st.markdown(f"### 📊 Recently Analyzed Tweets ({len(st.session_state.live_tweets)} total)")
+        st.markdown(f"### Recently Analyzed Tweets ({len(st.session_state.live_tweets)} total)")
         
         # Sentiment summary
         sentiment_summary = pd.Series([t["sentiment"] for t in st.session_state.live_tweets]).value_counts()
@@ -615,7 +676,7 @@ with tab4:
                 """, unsafe_allow_html=True)
         
         # Display tweets
-        st.markdown("### 📝 Tweet Details")
+        st.markdown("### Tweet Details")
         for tweet in st.session_state.live_tweets[:10]:
             sentiment_class = f"{tweet['sentiment'].lower()}-comment"
             sentiment_emoji = "🔴" if tweet["sentiment"] == "Negative" else "🟡" if tweet["sentiment"] == "Neutral" else "🟢"

@@ -44,11 +44,15 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .insight-box {
-        background-color: #EFF6FF;
-        padding: 1.5rem;
-        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,0.2);
         border-left: 5px solid #10B981;
+        border-radius: 14px;
+        padding: 18px;
+        color: rgba(255,255,255,0.9);
         margin: 1rem 0;
+        font-size: 0.95rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .recommendation-card {

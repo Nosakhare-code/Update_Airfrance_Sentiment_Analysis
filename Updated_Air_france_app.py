@@ -44,11 +44,15 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .insight-box {
-        background-color: #EFF6FF;
-        padding: 1.5rem;
-        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,0.2);
         border-left: 5px solid #10B981;
+        border-radius: 14px;
+        padding: 18px;
+        color: rgba(255,255,255,0.9);
         margin: 1rem 0;
+        font-size: 0.95rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .recommendation-card {
@@ -237,7 +241,8 @@ with st.sidebar:
                 tweet["sentiment"] = sentiment
                 tweet["sentiment_score"] = score
                 tweet["clean_text"] = clean_text(tweet["text"])
-            st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
+            # st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
+            st.session_state.live_tweets = new_tweets
             st.success(f"Analyzed {len(new_tweets)} new tweets!")
     
     # Manual text input for analysis
@@ -566,7 +571,89 @@ with tab3:
     
 
 with tab4:
+    
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
+
+    st.markdown("### 💰 Airline Revenue Impact Calculator")
+
+    colA, colB = st.columns(2)
+
+    with colA:
+        total_customers = st.number_input(
+            "Total Customers", 
+            min_value=1, 
+            max_value=1000000, 
+            value=1000
+        )
+
+        churn_pct = st.slider(
+            "Churn (%) — lost customers due to service issues",
+            min_value=0.0, 
+            max_value=50.0,
+            value=5.0,
+            step=0.5
+        ) / 100
+
+    with colB:
+        avg_ticket_price = st.number_input(
+            "Average Ticket Price (€)",
+            min_value=1,
+            max_value=100000,
+            value=5000
+        )
+
+        net_margin = st.slider(
+            "Net Profit Margin (%)",
+            min_value=0.0,
+            max_value=30.0,
+            value=2.0,
+            step=0.5
+        ) / 100
+
+    replacement_cost = st.number_input(
+        "Customer Replacement Cost (€)",
+        min_value=0,
+        max_value=10000,
+        value=150
+    )
+
+    # Calculations
+    customers_lost = int(total_customers * churn_pct)
+    gross_revenue_lost = customers_lost * avg_ticket_price
+    net_profit_lost = gross_revenue_lost * net_margin
+    replacement_cost_total = customers_lost * replacement_cost
+    total_economic_impact = net_profit_lost + replacement_cost_total
+
+    st.markdown("---")
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Customers Lost", f"{customers_lost:,}")
+    col2.metric("Gross Revenue Lost", f"€{gross_revenue_lost:,.0f}")
+    col3.metric("Net Profit Lost", f"€{net_profit_lost:,.0f}")
+    col4.metric("Total Economic Impact", f"€{total_economic_impact:,.0f}")
+
+    st.markdown("---")
+
+    st.markdown("### 🐦 Real-Time Comment Stream")
+
+    if st.session_state.live_tweets:
+        for tweet in st.session_state.live_tweets[:20]:
+            sentiment_class = {
+                "Negative": "negative-comment",
+                "Positive": "positive-comment",
+                "Neutral": "neutral-comment"
+            }.get(tweet.get("sentiment", "Neutral"), "neutral-comment")
+
+            st.markdown(f"""
+            <div class="twitter-comment {sentiment_class}">
+                <strong>@{tweet['username']}</strong><br>
+                {tweet['text']}<br>
+                <small>{tweet['timestamp'].strftime('%Y-%m-%d %H:%M')} | ❤️ {tweet['likes']} | 🔁 {tweet['retweets']}</small>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("Click 'Fetch New Tweets' to begin live stream simulation.")
+
     
     # Real-time analysis controls
     col1, col2, col3 = st.columns([2, 1, 1])

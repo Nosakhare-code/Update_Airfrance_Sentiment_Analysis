@@ -572,7 +572,6 @@ with tab3:
 
 with tab4:
     
-    with tab4:
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
     
     # Add realistic economic model

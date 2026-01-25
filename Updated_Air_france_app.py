@@ -572,88 +572,68 @@ with tab3:
 
 with tab4:
     
+    with tab4:
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
-
-    st.markdown("### 💰 Airline Revenue Impact Calculator")
-
-    colA, colB = st.columns(2)
-
-    with colA:
-        total_customers = st.number_input(
-            "Total Customers", 
-            min_value=1, 
-            max_value=1000000, 
-            value=1000
-        )
-
-        churn_pct = st.slider(
-            "Churn (%) — lost customers due to service issues",
-            min_value=0.0, 
-            max_value=50.0,
-            value=5.0,
-            step=0.5
-        ) / 100
-
-    with colB:
-        avg_ticket_price = st.number_input(
-            "Average Ticket Price (€)",
-            min_value=1,
-            max_value=100000,
-            value=5000
-        )
-
-        net_margin = st.slider(
-            "Net Profit Margin (%)",
-            min_value=0.0,
-            max_value=30.0,
-            value=2.0,
-            step=0.5
-        ) / 100
-
-    replacement_cost = st.number_input(
-        "Customer Replacement Cost (€)",
-        min_value=0,
-        max_value=10000,
-        value=150
-    )
-
+    
+    # Add realistic economic model
+    st.markdown("### 💰 Real-World Airline Revenue Impact (Realistic Model)")
+    
+    # Real-world economic assumptions
+    total_customers = 1000
+    churn_pct = 0.05  # 5% customer loss
+    avg_ticket_price_real = 5000  # €
+    trips_per_year = 1
+    net_margin = 0.02  # 2% realistic airline margin
+    replacement_cost = 150  # € per customer (marketing / discounts)
+    
     # Calculations
     customers_lost = int(total_customers * churn_pct)
-    gross_revenue_lost = customers_lost * avg_ticket_price
+    gross_revenue_lost = customers_lost * avg_ticket_price_real * trips_per_year
     net_profit_lost = gross_revenue_lost * net_margin
     replacement_cost_total = customers_lost * replacement_cost
     total_economic_impact = net_profit_lost + replacement_cost_total
-
-    st.markdown("---")
-
+    
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Customers Lost", f"{customers_lost:,}")
-    col2.metric("Gross Revenue Lost", f"€{gross_revenue_lost:,.0f}")
-    col3.metric("Net Profit Lost", f"€{net_profit_lost:,.0f}")
-    col4.metric("Total Economic Impact", f"€{total_economic_impact:,.0f}")
-
+    
+    with col1:
+        st.metric(
+            label="Customers Lost",
+            value=f"{customers_lost}",
+            help="5% churn from a 1,000-customer base"
+        )
+    
+    with col2:
+        st.metric(
+            label="Gross Revenue Lost",
+            value=f"€{gross_revenue_lost:,.0f}",
+            help="Ticket revenue associated with lost customers"
+        )
+    
+    with col3:
+        st.metric(
+            label="Net Profit Lost",
+            value=f"€{net_profit_lost:,.0f}",
+            help="Based on realistic ~2% airline net margin"
+        )
+    
+    with col4:
+        st.metric(
+            label="Total Economic Impact",
+            value=f"€{total_economic_impact:,.0f}",
+            help="Profit loss + cost to replace customers"
+        )
+    
+    st.markdown("""
+    <div class="insight-box">
+        <strong>Real-world interpretation:</strong><br>
+        Even with very high ticket prices, airlines lose relatively little <em>direct profit</em> from
+        economy-class churn due to thin margins.  
+        The real damage comes from <strong>seat under-utilization</strong>, <strong>replacement costs</strong>,
+        and spillover into premium demand.
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.markdown("---")
-
-    st.markdown("### 🐦 Real-Time Comment Stream")
-
-    if st.session_state.live_tweets:
-        for tweet in st.session_state.live_tweets[:20]:
-            sentiment_class = {
-                "Negative": "negative-comment",
-                "Positive": "positive-comment",
-                "Neutral": "neutral-comment"
-            }.get(tweet.get("sentiment", "Neutral"), "neutral-comment")
-
-            st.markdown(f"""
-            <div class="twitter-comment {sentiment_class}">
-                <strong>@{tweet['username']}</strong><br>
-                {tweet['text']}<br>
-                <small>{tweet['timestamp'].strftime('%Y-%m-%d %H:%M')} | ❤️ {tweet['likes']} | 🔁 {tweet['retweets']}</small>
-            </div>
-            """, unsafe_allow_html=True)
-    else:
-        st.info("Click 'Fetch New Tweets' to begin live stream simulation.")
-
     
     # Real-time analysis controls
     col1, col2, col3 = st.columns([2, 1, 1])

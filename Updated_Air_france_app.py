@@ -44,15 +44,11 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .insight-box {
-        background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(255,255,255,0.2);
+        background-color: #EFF6FF;
+        padding: 1.5rem;
+        border-radius: 10px;
         border-left: 5px solid #10B981;
-        border-radius: 14px;
-        padding: 18px;
-        color: rgba(255,255,255,0.9);
         margin: 1rem 0;
-        font-size: 0.95rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .recommendation-card {
@@ -241,8 +237,7 @@ with st.sidebar:
                 tweet["sentiment"] = sentiment
                 tweet["sentiment_score"] = score
                 tweet["clean_text"] = clean_text(tweet["text"])
-            # st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
-            st.session_state.live_tweets = new_tweets
+            st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
             st.success(f"Analyzed {len(new_tweets)} new tweets!")
     
     # Manual text input for analysis
@@ -571,68 +566,7 @@ with tab3:
     
 
 with tab4:
-    
     st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
-    
-    # Add realistic economic model
-    st.markdown("### 💰 Real-World Airline Revenue Impact (Realistic Model)")
-    
-    # Real-world economic assumptions
-    total_customers = 1000
-    churn_pct = 0.05  # 5% customer loss
-    avg_ticket_price_real = 5000  # €
-    trips_per_year = 1
-    net_margin = 0.02  # 2% realistic airline margin
-    replacement_cost = 150  # € per customer (marketing / discounts)
-    
-    # Calculations
-    customers_lost = int(total_customers * churn_pct)
-    gross_revenue_lost = customers_lost * avg_ticket_price_real * trips_per_year
-    net_profit_lost = gross_revenue_lost * net_margin
-    replacement_cost_total = customers_lost * replacement_cost
-    total_economic_impact = net_profit_lost + replacement_cost_total
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric(
-            label="Customers Lost",
-            value=f"{customers_lost}",
-            help="5% churn from a 1,000-customer base"
-        )
-    
-    with col2:
-        st.metric(
-            label="Gross Revenue Lost",
-            value=f"€{gross_revenue_lost:,.0f}",
-            help="Ticket revenue associated with lost customers"
-        )
-    
-    with col3:
-        st.metric(
-            label="Net Profit Lost",
-            value=f"€{net_profit_lost:,.0f}",
-            help="Based on realistic ~2% airline net margin"
-        )
-    
-    with col4:
-        st.metric(
-            label="Total Economic Impact",
-            value=f"€{total_economic_impact:,.0f}",
-            help="Profit loss + cost to replace customers"
-        )
-    
-    st.markdown("""
-    <div class="insight-box">
-        <strong>Real-world interpretation:</strong><br>
-        Even with very high ticket prices, airlines lose relatively little <em>direct profit</em> from
-        economy-class churn due to thin margins.  
-        The real damage comes from <strong>seat under-utilization</strong>, <strong>replacement costs</strong>,
-        and spillover into premium demand.
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
     
     # Real-time analysis controls
     col1, col2, col3 = st.columns([2, 1, 1])

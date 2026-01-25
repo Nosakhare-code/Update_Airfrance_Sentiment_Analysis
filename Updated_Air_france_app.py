@@ -241,7 +241,8 @@ with st.sidebar:
                 tweet["sentiment"] = sentiment
                 tweet["sentiment_score"] = score
                 tweet["clean_text"] = clean_text(tweet["text"])
-            st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
+            # st.session_state.live_tweets = new_tweets + st.session_state.live_tweets[:20]
+            st.session_state.live_tweets = new_tweets
             st.success(f"Analyzed {len(new_tweets)} new tweets!")
     
     # Manual text input for analysis

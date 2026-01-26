@@ -91,10 +91,10 @@ def load_sentiment_model():
         )
         return sentiment_pipeline
     except ImportError:
-        st.warning("⚠️ Transformers library not available. Using keyword-based analysis.")
+        st.warning(" Transformers library not available. Using keyword-based analysis.")
         return None
     except Exception as e:
-        st.warning(f"⚠️ Could not load model: {e}. Using keyword-based analysis.")
+        st.warning(f" Could not load model: {e}. Using keyword-based analysis.")
         return None
 
 # Initialize session state
@@ -229,11 +229,11 @@ with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Air_France_Logo.svg/2560px-Air_France_Logo.svg.png", 
              use_column_width=True)
     
-    st.markdown("### ⚙️ Analysis Controls")
+    st.markdown("### Analysis Controls")
     
     # Real-time analysis controls
     st.markdown("**Live Analysis**")
-    if st.button("🔄 Fetch New Tweets", use_container_width=True):
+    if st.button(" Fetch New Tweets", use_container_width=True):
         with st.spinner("Fetching latest tweets..."):
             new_tweets = fetch_twitter_comments_simulated()
             for tweet in new_tweets:
@@ -248,7 +248,7 @@ with st.sidebar:
     # Manual text input for analysis
     st.markdown("**Analyze Custom Text**")
     custom_text = st.text_area("Enter text to analyze:", height=100)
-    if st.button("🔍 Analyze Sentiment", use_container_width=True) and custom_text:
+    if st.button(" Analyze Sentiment", use_container_width=True) and custom_text:
         with st.spinner("Analyzing sentiment..."):
             sentiment, score = analyze_sentiment_live(custom_text)
             st.session_state.analysis_history.append({
@@ -572,9 +572,9 @@ with tab3:
 
 with tab4:
     
-    st.markdown('<h2 class="sub-header">📈 Live Twitter Analysis</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header"> Live Twitter Analysis</h2>', unsafe_allow_html=True)
 
-    st.markdown("### 💰 Airline Revenue Impact Calculator")
+    st.markdown("### Airline Revenue Impact Calculator")
 
     colA, colB = st.columns(2)
 
@@ -634,7 +634,7 @@ with tab4:
 
     st.markdown("---")
 
-    st.markdown("### 🐦 Real-Time Comment Stream")
+    st.markdown("###  Real-Time Comment Stream")
 
     if st.session_state.live_tweets:
         for tweet in st.session_state.live_tweets[:20]:
@@ -743,7 +743,7 @@ with tab4:
 
 # Analysis History
 if st.session_state.analysis_history:
-    with st.expander("📋 Analysis History"):
+    with st.expander(" Analysis History"):
         for analysis in reversed(st.session_state.analysis_history[-5:]):
             st.markdown(f"""
             **{analysis['timestamp'].strftime('%H:%M')}** - {analysis['sentiment']} ({analysis['score']:.2f})
